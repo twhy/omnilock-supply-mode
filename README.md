@@ -45,3 +45,9 @@ ts-node src/unique_cell.ts
 ```
 ts-node src/omnilock.ts
 ```
+
+## Mint XUDT using Omnilock Cell with Supply Mode
+```
+ts-node src/omnilock_mint.ts        // Error
+```
+Error code 4: https://github.com/nervosnetwork/ckb-script-error-codes/blob/be23cdbf72210e39a5f2d141a7b12798640c9a80/by-type-hash/9b819793a64463aed77c615d6cb226eea5487ccfc0783043a587254cda2b6f26.md?plain=1#L140

@@ -35,20 +35,18 @@ async function main() {
     scriptSearchMode: 'exact'
   });
 
-  console.log('info', info.objects[0]);
-
   const omni = await indexer.getCells({
     script: omnilock,
     scriptType: "lock",
     scriptSearchMode: 'exact'
   });
 
-  const omnidata = bytes.concat(
+  const omnidata = bytes.hexify(bytes.concat(
     Uint8.pack(0),
     Uint128.pack(10000),
     Uint128.pack(88888888), // total supply
     utils.computeScriptHash(xudt)
-  );
+  ));
 
   const omnicell = helpers.cellHelper.create({
     lock: omnilock,
