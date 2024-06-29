@@ -9,7 +9,7 @@ const { XUDT, OMNILOCK } = config.TESTNET.SCRIPTS;
 const TYPE_ID = {
   codeHash: "0x00000000000000000000000000000000000000000000000000545950455f4944",
   hashType: "type" as HashType,
-  args: "0x33caa7cdc81d67448dcc2d511c18b1c3b564699e521e045f7fe3baef0290e5e4"
+  args: "0x33caa7cdc81d67448dcc2d511c18b1c3b564699e521e045f7fe3baef0290e5e4"    // generated in omnilock.ts
 }
 
 async function main() {
@@ -83,7 +83,7 @@ async function main() {
   }));
   txSkeleton = txSkeleton.update("witnesses", (witnesses) => witnesses.set(0, placeholder));
   txSkeleton = commons.common.prepareSigningEntries(txSkeleton);
-  // console.log('txSkeleton', JSON.stringify(txSkeleton.toJS(), null, 2));
+  console.log('txSkeleton', JSON.stringify(txSkeleton.toJS(), null, 2));
   const signatures = txSkeleton.get('signingEntries')
     .map(({ message }) => hd.key.signRecoverable(message, tom.secretKey))
     .toArray();
