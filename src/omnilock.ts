@@ -1,17 +1,26 @@
-import { hd, utils, config, helpers, RPC, Indexer, commons, HashType } from '@ckb-lumos/lumos';
-import { bytes, Uint8, Uint128 } from '@ckb-lumos/lumos/codec';
-import { tom, UNIQUE_CELL, CKB_RPC_URL, CKB_INDEXER_URL } from './constant';
-import { computeScriptHash } from '@ckb-lumos/lumos/utils';
+import { hd, utils, config, helpers, RPC, Input, Indexer, commons, HashType } from '@ckb-lumos/lumos';
+import { bytes, blockchain, Uint8, Uint64, Uint128 } from '@ckb-lumos/lumos/codec';
+import { tom, CKB_RPC_URL, CKB_INDEXER_URL } from './constant';
+
+const { hexify } = bytes;
+const { computeScriptHash } = utils;
 
 config.initializeConfig(config.TESTNET);
 
 const { XUDT, OMNILOCK } = config.TESTNET.SCRIPTS;
 
-const TOKEN_INFO_TYPE_SCRIPT = {
-  codeHash: "0x8e341bcfec6393dcd41e635733ff2dca00a6af546949f70c57a706c0f344df8b",
+const TYPE_ID = {
+  codeHash: "0x00000000000000000000000000000000000000000000000000545950455f4944",
   hashType: "type" as HashType,
-  args: "0xcd8fd1cc554fa153905a5c6d14d0a42dc1fbc797"
+  args: hexify(new Uint8Array(32)),   // 32 bytes placeholder
 };
+
+function generateTypeIdArgs(input: Input, index: number) {
+  const hasher = new utils.CKBHasher();
+  hasher.update(blockchain.CellInput.pack(input));
+  hasher.update(Uint64.pack(index));
+  return hasher.digestHex();
+}
 
 async function main() {
   const rpc = new RPC(CKB_RPC_URL);
@@ -25,8 +34,10 @@ async function main() {
   const omnilock = {
     codeHash: OMNILOCK.CODE_HASH,
     hashType: OMNILOCK.HASH_TYPE,
-    args: "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + computeScriptHash(TOKEN_INFO_TYPE_SCRIPT).slice(2),
+    args: "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + computeScriptHash(TYPE_ID).slice(2),
   };
+
+  console.log('public key hash', hd.key.publicKeyToBlake160(tom.publicKey).slice(2))
   
   const data = bytes.hexify(bytes.concat(
     Uint8.pack(0),
@@ -37,6 +48,7 @@ async function main() {
   
   const cell = helpers.cellHelper.create({
     lock: omnilock,
+    type: TYPE_ID,
     data
   });
 
@@ -58,9 +70,13 @@ async function main() {
     }
   });
 
-  txSkeleton = helpers.addCellDep(txSkeleton, UNIQUE_CELL.TESTNET.CELL_DEP);
-
   txSkeleton = await commons.common.injectCapacity(txSkeleton, [tom.address], cell.cellOutput.capacity);
+  const args = generateTypeIdArgs({
+    previousOutput: txSkeleton.get('inputs').get(0)!.outPoint!,
+    since: txSkeleton.get('inputSinces').get(0, '0x0'),
+  }, txSkeleton.get('outputs').size);
+  cell.cellOutput.type!.args = args;
+  cell.cellOutput.lock.args = "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + computeScriptHash(cell.cellOutput.type!).slice(2);
   txSkeleton = txSkeleton.update('outputs', (outputs) => outputs.push(cell));
   txSkeleton = await commons.common.payFeeByFeeRate(txSkeleton, [tom.address], BigInt(1000));
   txSkeleton = commons.common.prepareSigningEntries(txSkeleton);
@@ -72,5 +88,7 @@ async function main() {
   tx.hash = await rpc.sendTransaction(tx);
   console.log('tx', tx);
 }
+
+// Transaction 0x16f5525edb1042dddd4b2ad49da2f81209b640b93fc380b78e93286916af962e
 
 main();

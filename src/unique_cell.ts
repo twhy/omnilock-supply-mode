@@ -52,8 +52,8 @@ async function main() {
 
   const coin = {
     decimal: 6,
-    name: "UNIQUE COIN",
-    symbol: "UNC",
+    name: "BEE COIN",
+    symbol: "BEC",
   };
 
   const data = bytes.hexify(bytes.concat(
@@ -74,9 +74,9 @@ async function main() {
   const input: Input = {
     previousOutput: txSkeleton.get('inputs').get(0)!.outPoint!,
     since: txSkeleton.get('inputSinces').get(0, '0x0'),
-  }
+  };
   // set actual args
-  cell.cellOutput.type!.args = generateUniqueCellArgs(input, txSkeleton.get('inputs').size);
+  cell.cellOutput.type!.args = generateUniqueCellArgs(input, txSkeleton.get('outputs').size);
 
   txSkeleton = txSkeleton.update('outputs', (outputs) => outputs.push(cell));
   txSkeleton = await commons.common.payFeeByFeeRate(txSkeleton, [tom.address], BigInt(1000));

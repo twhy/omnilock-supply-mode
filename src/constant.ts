@@ -12,24 +12,24 @@ export const CKB_INDEXER_URL = "https://testnet.ckb.dev/indexer";
 export const SHANNON_PER_CKB = BigInt(10n ** 8n);
 
 export const tom: Account = {
-  mnemonic: "topple poem win speak mixed pipe ivory usage cruel hybrid soul siren",
-  address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqweyp8e4gr7qtwupaylt744kjuer3gvqlsx5a55s",
-  secretKey: "0x191219118192838aaf1434e0cba23512a622cd9b10655e9069113e2970cf67d9",
-  publicKey: "0x0221f39fe7fe3bcbcde6c859ffadf9755757fca315f8d354cdee043099d5060a81",
+  mnemonic: "salad recycle flush atom laptop access fat cloth pig horror morning country",
+  address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq0gjcsdgvpup77pjugxgkp9zy7qc8e787sjz8vw8",
+  secretKey: "0xece99388a468381173adc5983f5c645793216c68e644b35667fbc0821f55fa7f",
+  publicKey: "0x02ee01e29509d141f0d846a8c602f9ec635022890f695a6e56864c68c279f2fe22",
 }
 
-export const bob: Account = {
-  mnemonic: "tired account learn mosquito tuna egg vanish scout pen security spend village",
-  address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqvnmx4h95f4evawg34vsevtdcq6jqag49ctetfx6",
-  secretKey: "0x53d62058e920ab738052c019c4f1b681d4e588d998a64ce22af7f2194b68d903",
-  publicKey: "0x0202eb88f12dfa76d4beff749827904d039fce4a070f4c5a6880744d208d178347",
+export const bob: Account ={
+  mnemonic: "smart april pitch asthma course miss slot sick air cannon achieve tuna",
+  address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsq2aj9wc8l80uqlvkclqqn32pg2rlnk9nwqdu660e",
+  secretKey: "0x14eac92a94d3e99b12dde6fe48c60e2e55f57532d112c19d2722fd55b7c236be",
+  publicKey: "0x031c82dcb4d58bea437302e2605056327b8454e824dd78637379dc5909c84413b1",
 }
 
-export const may: Account = {
-  mnemonic: "cricket color build protect youth essence estate announce faculty dice ability gift",
-  address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqfe2j06myrnwzq7tn0zw7m9szg6enpnwaqn7pu2d",
-  secretKey: "0x7982c786f6c29775a256a527b1b35b497ac8be7f99c4b8ad3345beff1ae8dcd9",
-  publicKey: "0x03c8500405754eca3711b24fb185c0bc16470fc8f2dc7ff5dc1fe16b541f85202f",
+export const may: Account ={
+  mnemonic: "square shallow tiger belt ivory quality multiply harvest clock valley ripple right",
+  address: "ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqwz36snytvylvama04tfn286jcsjz55yzghrn6dr",
+  secretKey: "0x0a49b7d459a60b1cff2cbb405f243d087254d6af53c0f5a8df9fbdd51c3198d6",
+  publicKey: "0x036f9054777fe6b7cbe1db49ec102c9c23ccfc62c60d4a45133c336c8b46f5c9e7",
 }
 
 export const sam: Account = {

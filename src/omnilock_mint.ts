@@ -1,17 +1,16 @@
 import { hd, utils, config, helpers, commons, RPC, Indexer, HashType } from '@ckb-lumos/lumos';
 import { bytes, blockchain, Uint8, Uint128 } from '@ckb-lumos/lumos/codec';
-import { computeScriptHash } from '@ckb-lumos/lumos/utils';
-import { tom, may, UNIQUE_CELL } from './constant';
+import { tom, may } from './constant';
 
 config.initializeConfig(config.TESTNET);
 
 const { XUDT, OMNILOCK } = config.TESTNET.SCRIPTS;
 
-const TOKEN_INFO_TYPE_SCRIPT = {
-  codeHash: "0x8e341bcfec6393dcd41e635733ff2dca00a6af546949f70c57a706c0f344df8b",
+const TYPE_ID = {
+  codeHash: "0x00000000000000000000000000000000000000000000000000545950455f4944",
   hashType: "type" as HashType,
-  args: "0xcd8fd1cc554fa153905a5c6d14d0a42dc1fbc797"
-};
+  args: "0x33caa7cdc81d67448dcc2d511c18b1c3b564699e521e045f7fe3baef0290e5e4"
+}
 
 async function main() {
   const rpc = new RPC("https://testnet.ckb.dev/rpc");
@@ -26,16 +25,11 @@ async function main() {
   const omnilock = {
     codeHash: OMNILOCK.CODE_HASH,
     hashType: OMNILOCK.HASH_TYPE,
-    args: "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + computeScriptHash(TOKEN_INFO_TYPE_SCRIPT).slice(2),
+    args: "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + utils.computeScriptHash(TYPE_ID).slice(2),
+    // 0x00e89620d4303c0fbc19710645825113c0c1f3e3fa08030dd7f40b1fc03581776f17a7a15e65bfbcddc2320274a89e2acec0c56e2882
   };
 
-  const info = await indexer.getCells({
-    script: TOKEN_INFO_TYPE_SCRIPT,
-    scriptType: "type",
-    scriptSearchMode: 'exact'
-  });
-
-  const omni = await indexer.getCells({
+  const omniresp = await indexer.getCells({
     script: omnilock,
     scriptType: "lock",
     scriptSearchMode: 'exact'
@@ -44,11 +38,12 @@ async function main() {
   const omnidata = bytes.hexify(bytes.concat(
     Uint8.pack(0),
     Uint128.pack(10000),
-    Uint128.pack(88888888), // total supply
+    Uint128.pack(88888888),   // total supply
     utils.computeScriptHash(xudt)
   ));
 
   const omnicell = helpers.cellHelper.create({
+    type: TYPE_ID,
     lock: omnilock,
     data: omnidata
   });
@@ -58,11 +53,6 @@ async function main() {
     type: xudt,
     data: Uint128.pack(10000)
   });
-
-  const infocell = {
-    data: info.objects[0].data,
-    cellOutput: info.objects[0].cellOutput,
-  }
 
   let txSkeleton = helpers.TransactionSkeleton({
     cellProvider: indexer
@@ -84,35 +74,31 @@ async function main() {
     }
   });
   
-  txSkeleton = helpers.addCellDep(txSkeleton, UNIQUE_CELL.TESTNET.CELL_DEP);
-
-  txSkeleton = txSkeleton.update('inputs', (inputs) => inputs.push(omni.objects[0], info.objects[0]));
+  txSkeleton = txSkeleton.update('inputs', (inputs) => inputs.push(omniresp.objects[0]));
   txSkeleton = await commons.common.injectCapacity(txSkeleton, [tom.address], mintcell.cellOutput.capacity);
-  txSkeleton = txSkeleton.update('outputs', (outputs) => outputs.push(omnicell, mintcell, infocell));
+  txSkeleton = txSkeleton.update('outputs', (outputs) => outputs.push(omnicell, mintcell));
   txSkeleton = await commons.common.payFeeByFeeRate(txSkeleton, [tom.address], BigInt(1200));
   const placeholder = bytes.hexify(blockchain.WitnessArgs.pack({
     lock: commons.omnilock.OmnilockWitnessLock.pack({ signature: bytes.hexify(new Uint8Array(65)) })
   }));
   txSkeleton = txSkeleton.update("witnesses", (witnesses) => witnesses.set(0, placeholder));
   txSkeleton = commons.common.prepareSigningEntries(txSkeleton);
-  console.log('txSkeleton', JSON.stringify(txSkeleton.toJS(), null, 2));
-  const tx = helpers.createTransactionFromSkeleton(txSkeleton);
+  // console.log('txSkeleton', JSON.stringify(txSkeleton.toJS(), null, 2));
   const signatures = txSkeleton.get('signingEntries')
     .map(({ message }) => hd.key.signRecoverable(message, tom.secretKey))
     .toArray();
-  
+  const tx = helpers.createTransactionFromSkeleton(txSkeleton);
   tx.witnesses = [
-    bytes.hexify(blockchain.WitnessArgs.pack({ lock: commons.omnilock.OmnilockWitnessLock.pack({ signature: signatures[1] }) })),
+    bytes.hexify(blockchain.WitnessArgs.pack({ lock: commons.omnilock.OmnilockWitnessLock.pack({
+      signature: signatures[1]
+    })})),
     bytes.hexify(blockchain.WitnessArgs.pack({ lock: signatures[0] })),
   ];
-
+  tx.hash = await rpc.sendTransaction(tx);
   console.log('tx', tx);
-  tx.hash = await rpc.sendTransaction(tx);    
-  console.log('tx hash', tx.hash);
 }
 
 main();
-
 // https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0042-omnilock/0042-omnilock.md#unlock-with-supply-mode
 // Unlock with supply mode
 // CellDeps:
