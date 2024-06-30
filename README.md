@@ -94,5 +94,6 @@ Witnesses:
 ```
 
 ## Reference 
+* [Omnilock RFC](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0042-omnilock/0042-omnilock.md)
 * [Omnilock Script Error Codes](https://github.com/nervosnetwork/ckb-script-error-codes/blob/main/by-type-hash/9b819793a64463aed77c615d6cb226eea5487ccfc0783043a587254cda2b6f26.md)
 * [Error Code 90: ERROR_EXCEED_SUPPLY](https://github.com/nervosnetwork/ckb-script-error-codes/blob/main/by-type-hash/9b819793a64463aed77c615d6cb226eea5487ccfc0783043a587254cda2b6f26.md#90)
