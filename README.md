@@ -58,7 +58,7 @@ $ ts-node omnilock_mint.ts 3000    // Error 90: ERROR_EXCEED_SUPPLY
 ```
 
 ## RFC
-https://github.com/XuJiandong/rfcs/blob/xudt/rfcs/0042-omnilock/0042-omnilock.md#supply-mode
+https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0042-omnilock/0042-omnilock.md#supply-mode
 
 ```
 CellDeps:
