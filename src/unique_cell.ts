@@ -1,8 +1,9 @@
 import { hd, utils, config, helpers, commons, RPC, Indexer, HashType, DepType, Input } from '@ckb-lumos/lumos';
-import { bytes, blockchain, Uint64, Uint8 } from '@ckb-lumos/lumos/codec';
-import { tom } from './constant';
+import { bytes, blockchain, Uint8, Uint64 } from '@ckb-lumos/lumos/codec';
+import { CKT_RPC_URL, CKT_INDEXER_URL } from './constants';
+import { tom } from './accounts';
 
-const UNIQUE_CELL = {
+export const UNIQUE_CELL = {
   TESTNET: {
     CELL_DEP: {
       outPoint: {
@@ -41,8 +42,8 @@ function generateUniqueCellArgs(input: Input, index: number) {
 async function main() {
   config.initializeConfig(config.TESTNET);
   
-  const rpc = new RPC("https://testnet.ckb.dev/rpc");
-  const indexer = new Indexer("https://testnet.ckb.dev/indexer");
+  const rpc = new RPC(CKT_RPC_URL);
+  const indexer = new Indexer(CKT_INDEXER_URL);
 
   const lock = helpers.parseAddress(tom.address);
   const type = {
@@ -86,6 +87,7 @@ async function main() {
     .get('signingEntries')
     .map(({ message }) => hd.key.signRecoverable(message, tom.secretKey))
     .toArray();
+
   const tx = helpers.sealTransaction(txSkeleton, signatures);
   tx.hash = await rpc.sendTransaction(tx);
   console.log(`A unique cell has been created with tx hash ${tx.hash}`);

@@ -1,63 +1,43 @@
-import { hd, utils, config, helpers, commons, RPC, Indexer, HashType } from '@ckb-lumos/lumos';
+import fs from 'fs';
+import { hd, config, helpers, commons, RPC, Indexer } from '@ckb-lumos/lumos';
 import { bytes, blockchain, Uint8, Uint128 } from '@ckb-lumos/lumos/codec';
-import { tom, may } from './constant';
+import { XUDT_SCRIPT, XUDT_SCRIPT_HASH, TYPE_ID_SCRIPT, OMNILOCK_SCRIPT, MAX_SUPPLY, CURRENT_SUPPLY } from './omnilock_data';
+import { CKT_RPC_URL, CKT_INDEXER_URL } from './constants';
+import { tom, may } from './accounts';
 
 config.initializeConfig(config.TESTNET);
 
+const MINT_AMOUNT = +process.argv[2] || 1000;
+
 const { XUDT, OMNILOCK } = config.TESTNET.SCRIPTS;
 
-const TYPE_ID = {
-  codeHash: "0x00000000000000000000000000000000000000000000000000545950455f4944",
-  hashType: "type" as HashType,
-  args: "0x33caa7cdc81d67448dcc2d511c18b1c3b564699e521e045f7fe3baef0290e5e4"    // generated in omnilock.ts
-}
-
 async function main() {
-  const rpc = new RPC("https://testnet.ckb.dev/rpc");
-  const indexer = new Indexer("https://testnet.ckb.dev/indexer");
-
-  const xudt = {
-    codeHash: XUDT.CODE_HASH,
-    hashType: XUDT.HASH_TYPE,
-    args: utils.computeScriptHash(helpers.parseAddress(tom.address)),
-  };
-
-  console.log('xudt hash', utils.computeScriptHash(xudt));
-  // xudt hash 0xad38022245d1d6054b7a5a319625df8767ef4115e59654d35b9fdb5d6adfb4eb
-
-  const omnilock = {
-    codeHash: OMNILOCK.CODE_HASH,
-    hashType: OMNILOCK.HASH_TYPE,
-    args: "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + utils.computeScriptHash(TYPE_ID).slice(2),
-    // 0x00e89620d4303c0fbc19710645825113c0c1f3e3fa08030dd7f40b1fc03581776f17a7a15e65bfbcddc2320274a89e2acec0c56e2882
-  };
-
-  console.log('omnilock hash', utils.computeScriptHash(omnilock));
-  // 0x51dbdd843342fa31e99df19a29213a322e063b6707a0dacdbd06782ff7224465
+  const rpc = new RPC(CKT_RPC_URL);
+  const indexer = new Indexer(CKT_INDEXER_URL);
 
   const omniresp = await indexer.getCells({
-    script: omnilock,
+    script: OMNILOCK_SCRIPT,
     scriptType: "lock",
     scriptSearchMode: 'exact'
   });
 
   const omnidata = bytes.hexify(bytes.concat(
     Uint8.pack(0),
-    Uint128.pack(18888),      // current supply, need to update when mint
-    Uint128.pack(88888888),   // total supply
-    utils.computeScriptHash(xudt)
+    Uint128.pack(CURRENT_SUPPLY + MINT_AMOUNT),
+    Uint128.pack(MAX_SUPPLY),
+    XUDT_SCRIPT_HASH
   ));
 
   const omnicell = helpers.cellHelper.create({
-    type: TYPE_ID,
-    lock: omnilock,
+    type: TYPE_ID_SCRIPT,
+    lock: OMNILOCK_SCRIPT,
     data: omnidata
   });
 
   const mintcell = helpers.cellHelper.create({
     lock: helpers.parseAddress(may.address),
-    type: xudt,
-    data: Uint128.pack(8888)
+    type: XUDT_SCRIPT,
+    data: Uint128.pack(MINT_AMOUNT)
   });
 
   let txSkeleton = helpers.TransactionSkeleton({
@@ -101,7 +81,19 @@ async function main() {
     bytes.hexify(blockchain.WitnessArgs.pack({ lock: signatures[0] })),
   ];
   tx.hash = await rpc.sendTransaction(tx);
+  updateCurrentSupply(CURRENT_SUPPLY + MINT_AMOUNT);
   console.log('tx', tx);
+  console.log(`Minted ${MINT_AMOUNT} XUDT to May: ${may.address} with tx hash ${tx.hash}`);
+  console.log(`Current supply: ${CURRENT_SUPPLY + MINT_AMOUNT}, Max supply: ${MAX_SUPPLY}`);
+}
+
+const OMNILOCK_DATA_FILE = './omnilock_data.ts';
+function updateCurrentSupply(supply: number) {
+  const content = fs.readFileSync(OMNILOCK_DATA_FILE, 'utf8');
+  fs.writeFileSync(
+    OMNILOCK_DATA_FILE,
+    content.replace(/export const CURRENT_SUPPLY = (\d+);/, `export const CURRENT_SUPPLY = ${supply};`)
+  );
 }
 
 main();
