@@ -17,7 +17,7 @@ $ cd src
 ```sh
 $ ts-node generate.ts
 ```
-This will generate three accounts (tom, bob, may) and write them to `accounts.ts`.
+This will generate three test accounts (tom, bob, may) and write them to `accounts.ts`.
 
 ### 2. Claim Testnet CKB
 Copy `tom's` address in `accounts.ts` and claim some Testnet CKB.
