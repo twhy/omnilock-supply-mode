@@ -42,7 +42,7 @@ To keep things simple, all minted XUDT goes to `may's` address.
 
 And `CURRENT_SUPPLY` in `omnilock_data.ts` will be updated after each successful minting.
 
-### 5. View Cells / Transactions in Explorer
+### 5. View Transactions in Explorer
 Every successful transaction will be logged in terminal.
 
 Copy the transaction hash and view it Testnet Explorer: https://pudge.explorer.nervos.org/ .
