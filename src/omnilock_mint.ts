@@ -82,7 +82,7 @@ async function main() {
   ];
   tx.hash = await rpc.sendTransaction(tx);
   updateCurrentSupply(CURRENT_SUPPLY + MINT_AMOUNT);
-  console.log('tx', tx);
+  console.log('tx', JSON.stringify(tx, null, 2));
   console.log(`Minted ${MINT_AMOUNT} XUDT to May: ${may.address} with tx hash ${tx.hash}`);
   console.log(`Current supply: ${CURRENT_SUPPLY + MINT_AMOUNT}, Max supply: ${MAX_SUPPLY}`);
 }

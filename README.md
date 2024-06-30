@@ -55,6 +55,7 @@ $ ts-node omnilock.ts              // use default max supply 10,000
 $ ts-node omnilock_mint.ts 2000    // mint 2000 XUDT for may
 $ ts-node omnilock_mint.ts 6000    // mint another 6000 XUDT for may
 $ ts-node omnilock_mint.ts 3000    // Error 90: ERROR_EXCEED_SUPPLY
+// 2000 + 6000 + 3000 = 11,000 > 10,000
 ```
 
 ## RFC

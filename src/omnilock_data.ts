@@ -3,28 +3,28 @@ import { Script } from '@ckb-lumos/lumos';
 export const TYPE_ID_SCRIPT = {
   "codeHash": "0x00000000000000000000000000000000000000000000000000545950455f4944",
   "hashType": "type",
-  "args": "0xffaf6131766642186b2f71b64ed876ca61430b6e545fa183a65d79efafbe4550"
+  "args": "0x9cb55adc848dc02e9344eb3ed050cab502c115b021f7a2b31e82f20f9df53a8b"
 } as Script;
 
-export const MAX_SUPPLY = 10000;
+export const MAX_SUPPLY = 20000;
 
-export const CURRENT_SUPPLY = 6000;
+export const CURRENT_SUPPLY = 18000;
 
 export const XUDT_SCRIPT = {
   "codeHash": "0x25c29dc317811a6f6f3985a7a9ebc4838bd388d19d0feeecf0bcd60f6c0975bb",
   "hashType": "type",
-  "args": "0xf84e04d589cffc9023e39aece45d968d557d44f916201577c3a4ebf470d4fc97"
+  "args": "0x8be8af2e8e0f6efe6d2f03652c0a454fb83935374dabc32503d70a5f5b9c04de"
 } as Script;
 
-export const XUDT_SCRIPT_HASH = "0xd8ba4099ca8d5f3d613184d226727ec0b96fa14a540683fee8f9b9dc68c8f114";
+export const XUDT_SCRIPT_HASH = "0xce29a79a4a751b75a45dc90b852a3ab77835e9f02fee8debcb951cd65e650831";
 
 export const OMNILOCK_SCRIPT = {
   "codeHash": "0xf329effd1c475a2978453c8600e1eaf0bc2087ee093c3ee64cc96ec6847752cb",
   "hashType": "type",
-  "args": "0x005085dfb7cca9539e01e508c17130b29d15ce369008039fed33a642bd38a0ab4995b7eb31951d2beb667d56b863ea50f22d17e6aacd"
+  "args": "0x00b716d7127cb841288f7a1a42e0a4b96831242e3b080811e807dbd469935ab07c7c17f24d5587172360b2ef907cffe368da5cb161d4"
 } as Script;
 
-export const OMNILOCK_SCRIPT_HASH = "0xdd5b7af7a9d0f3fa0b7113305cf9ee777c161a370978c52d2eea9f39ada2aa8c";
+export const OMNILOCK_SCRIPT_HASH = "0x49ae48dbe08943e8ce30ba18e0e57271ea494d31578dbdf99ac2ad26066d78ad";
 
 export const OMNILOCK_TRANSACTION = {
   "version": "0x0",
@@ -56,18 +56,18 @@ export const OMNILOCK_TRANSACTION = {
     {
       "since": "0x0",
       "previousOutput": {
-        "txHash": "0xa48eae2e7bcac4e42579d58590a4b5bec53a4f560d66e7d631d4f7cd571a33ac",
+        "txHash": "0x1183b5c2b00be751d0e35083c333073692237a52bbdee4192f5c959a129f8a47",
         "index": "0x0"
       }
     }
   ],
   "outputs": [
     {
-      "capacity": "0xd91d54c48a",
+      "capacity": "0xde5a6f885c",
       "lock": {
         "codeHash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
         "hashType": "type",
-        "args": "0x5085dfb7cca9539e01e508c17130b29d15ce3690"
+        "args": "0xb716d7127cb841288f7a1a42e0a4b96831242e3b"
       }
     },
     {
@@ -75,21 +75,21 @@ export const OMNILOCK_TRANSACTION = {
       "lock": {
         "codeHash": "0xf329effd1c475a2978453c8600e1eaf0bc2087ee093c3ee64cc96ec6847752cb",
         "hashType": "type",
-        "args": "0x005085dfb7cca9539e01e508c17130b29d15ce369008039fed33a642bd38a0ab4995b7eb31951d2beb667d56b863ea50f22d17e6aacd"
+        "args": "0x00b716d7127cb841288f7a1a42e0a4b96831242e3b080811e807dbd469935ab07c7c17f24d5587172360b2ef907cffe368da5cb161d4"
       },
       "type": {
         "codeHash": "0x00000000000000000000000000000000000000000000000000545950455f4944",
         "hashType": "type",
-        "args": "0xffaf6131766642186b2f71b64ed876ca61430b6e545fa183a65d79efafbe4550"
+        "args": "0x9cb55adc848dc02e9344eb3ed050cab502c115b021f7a2b31e82f20f9df53a8b"
       }
     }
   ],
   "outputsData": [
     "0x",
-    "0x000000000000000000000000000000000010270000000000000000000000000000d8ba4099ca8d5f3d613184d226727ec0b96fa14a540683fee8f9b9dc68c8f114"
+    "0x0000000000000000000000000000000000204e0000000000000000000000000000ce29a79a4a751b75a45dc90b852a3ab77835e9f02fee8debcb951cd65e650831"
   ],
   "witnesses": [
-    "0x5500000010000000550000005500000041000000bd66fe43a46ecb7f0e3d24e02be1405ccb8c11a6be01deedeb845bebdfc67dcd5e939ca9305a881a78c827027a7220e21d6b04e29c8227cdeb2024238adb96e101"
+    "0x55000000100000005500000055000000410000006e03a72aa8984656a57ebf9e9aa47e823f8abd00183df49b78a997bffd09a22e6cb30c58bcadcbcdb4b961c3b03fcc9d25770755f75b9b9f2d2af2618089e31200"
   ],
-  "hash": "0x5adca92ad0c2d32849feb5a3cdbf01162ceeea54e28a0c9df9e47bb178448fb0"
+  "hash": "0xf049b272871df4cdcd1e060e690c47a0492b25f0557983ea558433e1945ce3b8"
 };
