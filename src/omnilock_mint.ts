@@ -22,12 +22,18 @@ async function main() {
     args: utils.computeScriptHash(helpers.parseAddress(tom.address)),
   };
 
+  console.log('xudt hash', utils.computeScriptHash(xudt));
+  // xudt hash 0xad38022245d1d6054b7a5a319625df8767ef4115e59654d35b9fdb5d6adfb4eb
+
   const omnilock = {
     codeHash: OMNILOCK.CODE_HASH,
     hashType: OMNILOCK.HASH_TYPE,
     args: "0x00" + hd.key.publicKeyToBlake160(tom.publicKey).slice(2) + "08" + utils.computeScriptHash(TYPE_ID).slice(2),
     // 0x00e89620d4303c0fbc19710645825113c0c1f3e3fa08030dd7f40b1fc03581776f17a7a15e65bfbcddc2320274a89e2acec0c56e2882
   };
+
+  console.log('omnilock hash', utils.computeScriptHash(omnilock));
+  // 0x51dbdd843342fa31e99df19a29213a322e063b6707a0dacdbd06782ff7224465
 
   const omniresp = await indexer.getCells({
     script: omnilock,
@@ -37,7 +43,7 @@ async function main() {
 
   const omnidata = bytes.hexify(bytes.concat(
     Uint8.pack(0),
-    Uint128.pack(10000),
+    Uint128.pack(18888),      // current supply, need to update when mint
     Uint128.pack(88888888),   // total supply
     utils.computeScriptHash(xudt)
   ));
@@ -51,7 +57,7 @@ async function main() {
   const mintcell = helpers.cellHelper.create({
     lock: helpers.parseAddress(may.address),
     type: xudt,
-    data: Uint128.pack(10000)
+    data: Uint128.pack(8888)
   });
 
   let txSkeleton = helpers.TransactionSkeleton({
@@ -78,12 +84,12 @@ async function main() {
   txSkeleton = await commons.common.injectCapacity(txSkeleton, [tom.address], mintcell.cellOutput.capacity);
   txSkeleton = txSkeleton.update('outputs', (outputs) => outputs.push(omnicell, mintcell));
   txSkeleton = await commons.common.payFeeByFeeRate(txSkeleton, [tom.address], BigInt(1200));
+  const length = commons.omnilock.OmnilockWitnessLock.pack({ signature: bytes.hexify(new Uint8Array(65)) }).length   // 85
   const placeholder = bytes.hexify(blockchain.WitnessArgs.pack({
-    lock: commons.omnilock.OmnilockWitnessLock.pack({ signature: bytes.hexify(new Uint8Array(65)) })
+    lock: bytes.hexify(new Uint8Array(length))
   }));
   txSkeleton = txSkeleton.update("witnesses", (witnesses) => witnesses.set(0, placeholder));
   txSkeleton = commons.common.prepareSigningEntries(txSkeleton);
-  console.log('txSkeleton', JSON.stringify(txSkeleton.toJS(), null, 2));
   const signatures = txSkeleton.get('signingEntries')
     .map(({ message }) => hd.key.signRecoverable(message, tom.secretKey))
     .toArray();
