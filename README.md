@@ -45,7 +45,7 @@ And `CURRENT_SUPPLY` in `omnilock_data.ts` will be updated after each successful
 ### 5. View Transactions in Explorer
 Every successful transaction will be logged in terminal.
 
-Copy the transaction hash and view it Testnet Explorer: https://pudge.explorer.nervos.org/ .
+Copy the transaction hash and view it in Testnet Explorer: https://pudge.explorer.nervos.org/ .
 
 ## A Full Example
 ```
